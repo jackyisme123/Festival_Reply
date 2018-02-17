@@ -47,7 +47,7 @@ def heartbeat():
 k = ThreadJob(heartbeat, threading.Event(), AUTO_SEND_TIME)
 if not k.is_running:
     k.start()
-itchat.auto_login(enableCmdQR=2, hotReload=True)
+itchat.auto_login(hotReload=True)
 itchat.run()
 
 
