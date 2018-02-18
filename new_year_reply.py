@@ -4,6 +4,8 @@ import threading
 import itchat
 import random
 import logging
+import argparse
+import sys
 
 logging.basicConfig(filename='logger.log', level=logging.INFO)
 
@@ -65,11 +67,41 @@ k = ThreadJob(heartbeat, threading.Event(), AUTO_SEND_TIME)
 if not k.is_running:
     k.start()
 
-itchat.auto_login(enableCmdQR=2, hotReload=True)
-try:
-    itchat.run()
-except KeyboardInterrupt:
-    k.stop()
-    raise
+def main(arguments=None):
+    if arguments is None:
+        arguments = []
+
+    parser = argparse.ArgumentParser()
+    # Allow setting of logging level from arguments.
+    logging_levels = {}
+    for level in (
+            logging.NOTSET, logging.DEBUG, logging.INFO, logging.WARNING,
+            logging.ERROR, logging.CRITICAL
+    ):
+        logging_levels[logging.getLevelName(level).lower()] = level
+
+    parser.add_argument(
+        '-v', '--verbosity',
+        help='Set the logging output verbosity.',
+        choices=logging_levels.keys(),
+        default='info'
+    )
+    namespace = parser.parse_args(arguments)
+
+    # Set up basic logging.
+    logging.basicConfig(
+        format='%(asctime)s %(message)s',
+        level=logging_levels[namespace.verbosity]
+    )
+
+    itchat.auto_login(enableCmdQR=2, hotReload=True)
+    try:
+        itchat.run()
+    except KeyboardInterrupt:
+        k.stop()
+        raise
+
+if __name__ == '__main__':
+    raise SystemExit(main(sys.argv[1:]))
 
 
