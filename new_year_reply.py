@@ -24,10 +24,9 @@ def newyear_reply(msg):
     receive = msg['Text']
     if '狗年' in receive or '祝' in receive or '大吉' in receive or '幸福' in receive or '身体健康' in receive \
             or '阖家' in receive or '新年' in receive or '拜年' in receive:
-        n = random.randint(0, len(replies))
-        if msg['FromUserName'] == '@6bc1d85b523cd64ad25d62e0bae035dd':
-            return replies[n]
-        elif msg['FromUserName'] in user:
+        n = random.randint(0, len(replies)-1)
+        print(msg['User'])
+        if msg['FromUserName'] in user:
             return
         else:
             user.append(msg['FromUserName'])
@@ -57,8 +56,6 @@ class ThreadJob(threading.Thread):
 
 def heartbeat():
     itchat.send('Heartbeat', 'filehelper')
-
-
 
 k = ThreadJob(heartbeat, threading.Event(), AUTO_SEND_TIME)
 if not k.is_running:
