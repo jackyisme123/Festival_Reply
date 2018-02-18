@@ -3,7 +3,7 @@
 import threading
 import itchat
 import random
-import signal
+import logging
 
 replies = [
     '二郎神找不到他的神犬啦，原来是跑到你的身边，在你看不见的地方守护着你，陪伴你度过平安吉祥如意的狗年。',
@@ -26,7 +26,7 @@ def newyear_reply(msg):
             or '阖家' in receive or '新年' in receive or '拜年' in receive:
         n = random.randint(0, 8)
         if msg['FromUserName'] in user:
-            print(msg['FromUserName'])
+            logging.info(msg['FromUserName'])
             return
         else:
             user.append(msg['FromUserName'])
@@ -38,26 +38,36 @@ class ThreadJob(threading.Thread):
         self.event = event
         self.interval = interval
         super(ThreadJob, self).__init__()
+        self._stop_event = threading.Event()
         self.is_running = False
 
     def run(self):
+        self.is_running = True
         while not self.event.wait(self.interval):
             self.callback()
-            self.is_running = True
+        self._stop_event = threading.Event()
+
+    def stop(self):
+        self.is_running = False
+        self._stop_event.set()
+
+    def stopped(self):
+        return self._stop_event.is_set()
 
 def heartbeat():
     itchat.send('Heartbeat', 'filehelper')
 
-def sigint_handler(signum, frame):
-    print('Stop pressing the CTRL+C!')
 
-signal.signal(signal.SIGINT, sigint_handler)
 
 k = ThreadJob(heartbeat, threading.Event(), AUTO_SEND_TIME)
 if not k.is_running:
     k.start()
 
 itchat.auto_login(enableCmdQR=2, hotReload=True)
-itchat.run()
+try:
+    itchat.run()
+except KeyboardInterrupt:
+    k.stop()
+    raise
 
 
