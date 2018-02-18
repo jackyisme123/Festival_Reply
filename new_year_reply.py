@@ -49,7 +49,7 @@ def heartbeat():
     itchat.send('Heartbeat', 'filehelper')
 
 def sigint_handler(signum, frame):
-    print 'Stop pressing the CTRL+C!'
+    print('Stop pressing the CTRL+C!')
 
 signal.signal(signal.SIGINT, sigint_handler)
 
