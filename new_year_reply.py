@@ -65,11 +65,8 @@ if not k.is_running:
     k.start()
 
 def main():
-    itchat.auto_login(hotReload=True)
-    try:
-        itchat.run()
-    except KeyboardInterrupt:
-        os._exit(1)
+    itchat.auto_login(enableCmdQR=2, hotReload=True)
+    itchat.run()
 
 if __name__ == '__main__':
     main()
