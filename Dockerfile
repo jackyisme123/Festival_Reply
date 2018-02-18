@@ -6,6 +6,4 @@ RUN pip install itchat
 
 COPY new_year_reply.py ./new_year_reply.py
 
-ENV LOGLEVEL=info
-
-CMD python ./new_year_reply.py -v ${LOGLEVEL}
+CMD ["python", "./new_year_reply.py"]

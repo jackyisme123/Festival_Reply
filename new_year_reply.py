@@ -3,11 +3,7 @@
 import threading
 import itchat
 import random
-import logging
-import argparse
-import sys
-
-logging.basicConfig(filename='logger.log', level=logging.INFO)
+import os
 
 replies = [
     '二郎神找不到他的神犬啦，原来是跑到你的身边，在你看不见的地方守护着你，陪伴你度过平安吉祥如意的狗年。',
@@ -28,9 +24,10 @@ def newyear_reply(msg):
     receive = msg['Text']
     if '狗年' in receive or '祝' in receive or '大吉' in receive or '幸福' in receive or '身体健康' in receive \
             or '阖家' in receive or '新年' in receive or '拜年' in receive:
-        n = random.randint(0, 8)
-        if msg['FromUserName'] in user:
-            logging.info(msg['FromUserName'])
+        n = random.randint(0, len(replies))
+        if msg['FromUserName'] == '@6bc1d85b523cd64ad25d62e0bae035dd':
+            return replies[n]
+        elif msg['FromUserName'] in user:
             return
         else:
             user.append(msg['FromUserName'])
@@ -67,41 +64,14 @@ k = ThreadJob(heartbeat, threading.Event(), AUTO_SEND_TIME)
 if not k.is_running:
     k.start()
 
-def main(arguments=None):
-    if arguments is None:
-        arguments = []
-
-    parser = argparse.ArgumentParser()
-    # Allow setting of logging level from arguments.
-    logging_levels = {}
-    for level in (
-            logging.NOTSET, logging.DEBUG, logging.INFO, logging.WARNING,
-            logging.ERROR, logging.CRITICAL
-    ):
-        logging_levels[logging.getLevelName(level).lower()] = level
-
-    parser.add_argument(
-        '-v', '--verbosity',
-        help='Set the logging output verbosity.',
-        choices=logging_levels.keys(),
-        default='info'
-    )
-    namespace = parser.parse_args(arguments)
-
-    # Set up basic logging.
-    logging.basicConfig(
-        format='%(asctime)s %(message)s',
-        level=logging_levels[namespace.verbosity]
-    )
-
-    itchat.auto_login(enableCmdQR=2, hotReload=True)
+def main():
+    itchat.auto_login(hotReload=True)
     try:
         itchat.run()
     except KeyboardInterrupt:
-        k.stop()
-        raise
+        os._exit(1)
 
 if __name__ == '__main__':
-    raise SystemExit(main(sys.argv[1:]))
+    main()
 
 
