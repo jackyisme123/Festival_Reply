@@ -5,6 +5,8 @@ import itchat
 import random
 import logging
 
+logging.basicConfig(filename='logger.log', level=logging.INFO)
+
 replies = [
     '二郎神找不到他的神犬啦，原来是跑到你的身边，在你看不见的地方守护着你，陪伴你度过平安吉祥如意的狗年。',
     '狗新年天气预报：你将会遇到金钱雨、幸运风、友情雾、爱情露、健康霞、幸福云、顺利霜、美满雷、安全雹、开心闪、请注意它们将会缠绕着你整一年。',
