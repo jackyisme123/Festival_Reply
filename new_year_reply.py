@@ -18,7 +18,8 @@ AUTO_SEND_TIME = 60
 @itchat.msg_register(itchat.content.TEXT)
 def newyear_reply(msg):
     receive = msg['Text']
-    if '元宵' in receive or '月' in receive or '祝' in receive or '汤' in receive or '团员' in receive:
+    if '元宵' in receive or '月儿' in receive or '祝' in receive or '汤团' in receive or '团圆' in receive or '汤圆'\
+            in receive or '月亮' in receive:
         n = random.randint(0, len(replies)-1)
         print(msg['User'])
         if msg['FromUserName'] in user:
